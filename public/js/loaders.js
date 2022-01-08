@@ -7,3 +7,8 @@ export function loadImage(url) {
     image.src = url;
   });
 };
+
+export async function loadLevel(name) {
+  const level = await fetch(`/levels/${name}.json`)
+  return level.json();
+}

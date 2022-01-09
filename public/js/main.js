@@ -11,15 +11,23 @@ function drawBackground(background, context, sprites) {
   })
 };
 
+async function loadBackgroundSprites() {
+  const image = await loadImage('/img/tiles.png');
+  const sprites = new SpriteSheet(image, 16, 16);
+  sprites.define('ground', 0, 0);
+  sprites.define('sky', 3, 23);
+  return sprites;
+}
+
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
 
-const image = await loadImage('/img/tiles.png');
-const sprites = new SpriteSheet(image, 16, 16);
-sprites.define('ground', 0, 0);
-sprites.define('sky', 3, 23);
-
-const level = await loadLevel('1-1');
-level.backgrounds.forEach(background => {
-  drawBackground(background, context, sprites);
-});
+Promise.all([
+  loadBackgroundSprites(),
+  loadLevel('1-1'),
+])
+.then(([sprites,level]) => {
+  level.backgrounds.forEach(background => {
+    drawBackground(background, context, sprites);
+  });
+})
